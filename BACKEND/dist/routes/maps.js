@@ -30,9 +30,8 @@ mapsroute.post('/searchhospital', (req, res) => __awaiter(void 0, void 0, void 0
     fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${newuserLat},${newuserLng}&radius=${radius}&type=hospital&keyword=${encodeURIComponent(keyword)}&key=${api}`)
         .then(response => response.json())
         .then(data => {
-        res.json({ answer: data.results.forEach((element) => {
-                element.geometry.location;
-            }) });
+        console.log(data);
+        res.json({ answer: data.results });
         // Display hospitals on a map or as a list
     })
         .catch(error => console.error('Error fetching places:', error));
@@ -46,9 +45,9 @@ fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${u
     .then(response => response.json())
     .then(data => {
     console.log("yoyoyoy");
-    data.results.forEach((element) => {
-        console.log(element.geometry.location);
-    });
+    // data.results.forEach((element:any) => {
+    //     console.log(element.geometry.location)
+    // });
     // Display hospitals on a map or as a list
 })
     .catch(error => console.error('Error fetching places:', error));

@@ -13,5 +13,7 @@ app.use(body_parser_1.default.json());
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 console.log("hi from  index.ts");
+//user
+//hospital
 router.use('/maps', maps_1.default);
 exports.default = router;
