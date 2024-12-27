@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  username String @unique
+  password String 
+  age Int 
+  gender Gender @default(None)
+  appointments Appointments[]
+  medicalrecord MedicalRecord[]
+}
+enum Gender{
+  None
+  Male
+  Female
+}
+model Hospital{
+  id Int @id @default(autoincrement())
+  name String @unique
+  password String 
+  location String
+  speciality Speciality @default(Multipspeciality)
+  appointments Appointments[]
+}
+enum Speciality{
+  Multipspeciality
+  Eye
+  ENT
+  Heart
+  Gastric
+  Psychiatry
+  Dermatology
+  Dental
+  Cardiology
+}
+model Appointments {
+  id Int @id @default(autoincrement())
+  patient User @relation(fields: [patientId], references: [id])
+  patientId Int
+  hospitalId Int
+  hospital Hospital @relation(fields:[hospitalId],references: [id])
+  Time String
+  Date String
+  CreatedAt DateTime
+  severity Severity @default(Low)
+}
+enum Severity{
+  Low
+  Medium
+  High
+  Emergency
+}
+model MedicalRecord {
+  id Int @id @default(autoincrement())
+  patientId Int
+  patient User @relation(fields: [patientId], references: [id])
+  reportDate String?
+  hemoglobin Decimal?
+  packedCellVolume Decimal?
+  rbcCount Decimal?
+  mcv Decimal?
+  lymphocytesDiff Decimal?
+  neutrophils Decimal?
+  lymphocytes Decimal?
+  SGPT Decimal?
+  SGOT Decimal?
+  GGTP Decimal?
+  Albumin Decimal?
+  Protein Decimal?
+  Globulin Decimal?
+  severity Severity @default(Low)
+  summary String
+}
