@@ -1,31 +1,80 @@
 "use client";
-import { useEffect } from "react";
+import MapComponent from "@/components/map";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { locations } from "@/data/locations";
+import { Location } from "@/types/location";
+import { useEffect, useMemo, useState } from "react";
 
 export default function CallPage() {
+  // const [locations, setLocations] = useState<Location[]>([]);
+  const [userLocation, setUserLocation] = useState<{
+    lat: number;
+    lng: number;
+  }>({ lat: 31.599833, lng: 74.933556 });
+
   useEffect(() => {
     async function fetchData() {
-    const response = await fetch("http://localhost:3000/api/v1/maps/searchhospital", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        "userLat":"31.599833",
-        "userLng":"74.933556",
-        "radius":5000,
-        "keyword":"eye"
-    }),
-    });
-    const data = await response.json();
-    console.log(data);
+      const api = process.env.NEXT_PUBLIC_API_URL;
+      const response = await fetch(`${api}/api/v1/maps/searchhospital`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userLat: "31.599833",
+          userLng: "74.933556",
+          radius: 5000,
+          keyword: "eye",
+        }),
+      });
+      const data = await response.json();
+      console.log(data);
+
+      interface ApiResponse {
+        id: string;
+        lat: number;
+        lng: number;
+        name: string;
+        description: string;
+      }
+
+      // const nLoc: Location[] = (data as ApiResponse[]).map((loc: ApiResponse) => {
+      //   return {
+      //     id: loc.id,
+      //     position: { lat: loc.lat, lng: loc.lng },
+      //     name: loc.name,
+      //     description: loc.description,
+      //   };
+      // });
+
+      // console.log(nLoc);
+      // setLocations(nLoc);
+      // setLocations(data);
     }
+    navigator.geolocation.getCurrentPosition((position) => {
+      setUserLocation({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      });
+
+      console.log(position.coords.latitude, position.coords.longitude);
+    });
+
     fetchData();
   }, []);
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start"></main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center"></footer>
-    </div>
+    <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+      <div className="container mx-auto p-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Location Map</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <MapComponent locations={locations} />
+          </CardContent>
+        </Card>
+      </div>
+    </main>
   );
 }
