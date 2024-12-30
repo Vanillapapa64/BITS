@@ -1,10 +1,13 @@
 export interface Location {
-  id: number;
   name: string;
-  position: {
-    lat: number;
-    lng: number;
+  geometry: {
+    location: {
+      lat: number;
+      lng: number;
+    };
   };
-  description?: string;
+  place_id: string;
+  vicinity: string;
+  rating?: number;
+  user_ratings_total?: number;
 }
-

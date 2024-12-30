@@ -212,9 +212,9 @@ export default function MapComponent({ locations }: MapComponentProps) {
             icon={{
               path: 0, // Use a simple circle
               scale: 7,
-              fillColor: "#000",
+              fillColor: "#4285f4",
               fillOpacity: 1,
-              strokeColor: "#aaa",
+              strokeColor: "#BBD5FF",
               strokeWeight: 3,
             }}
           />
@@ -223,22 +223,26 @@ export default function MapComponent({ locations }: MapComponentProps) {
         {/* Location markers */}
         {locations.map((location) => (
           <Marker
-            key={location.id}
+            key={location.place_id}
+            position={location.geometry.location}
             icon="/marker.svg"
-            position={location.position}
             onClick={() => handleMarkerClick(location)}
           />
         ))}
 
         {selectedLocation && (
           <InfoWindow
-            position={selectedLocation.position}
+            position={selectedLocation.geometry.location}
             onCloseClick={handleInfoWindowClose}
           >
             <div className="p-2">
               <h3 className="font-bold">{selectedLocation.name}</h3>
-              {selectedLocation.description && (
-                <p className="text-sm mt-1">{selectedLocation.description}</p>
+              <p className="text-sm mt-1">{selectedLocation.vicinity}</p>
+              {selectedLocation.rating && (
+                <p className="text-sm mt-1">
+                  Rating: {selectedLocation.rating} (
+                  {selectedLocation.user_ratings_total} reviews)
+                </p>
               )}
             </div>
           </InfoWindow>
