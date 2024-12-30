@@ -69,10 +69,8 @@ model MedicalRecord {
   patient User @relation(fields: [patientId], references: [id])
   reportDate String?
   hemoglobin Decimal?
-  packedCellVolume Decimal?
   rbcCount Decimal?
   mcv Decimal?
-  lymphocytesDiff Decimal?
   neutrophils Decimal?
   lymphocytes Decimal?
   SGPT Decimal?
