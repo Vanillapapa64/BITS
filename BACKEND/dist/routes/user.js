@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const multer_1 = __importDefault(require("multer"));
 const ocr_1 = require("../functions/ocr");
+const fhir_1 = require("../functions/fhir");
 const userRouter = express_1.default.Router();
 const upload = (0, multer_1.default)({ dest: 'uploads/' });
 userRouter.post('/ocr', upload.single('file'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -31,21 +32,15 @@ userRouter.post('/ocr', upload.single('file'), (req, res) => __awaiter(void 0, v
         res.status(500).json({ error: "Some error" });
     }
 }));
-// userRouter.post('/ocrpdf',upload.single('file'),async(req:Request,res:Response)=>{
-//     try{
-//         if(!req.file){
-//             res.status(400).json({error:"no pdf found"})
-//             return;
-//         }
-//         const path=req.file.path;
-//         const pages=await pdfcount(path)
-//         console.log(pages)
-//         console.log('working')
-//         const text=await OcrPdf(path)
-//         console.log(text)
-//         res.json({Detected:text})
-//     }catch(err){
-//         res.status(500).json({error:err})
-//     }
-// })
+userRouter.get('/fetch', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const body = req.body;
+        const response = yield (0, fhir_1.searchPatient)(body);
+        res.json({ response: response });
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err });
+    }
+}));
 exports.default = userRouter;
