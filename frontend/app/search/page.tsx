@@ -6,6 +6,7 @@ import {
   SetLocationCookies,
 } from "@/server/locationCookies";
 import { Location } from "@/types/location";
+import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function CallPage() {
@@ -204,9 +205,12 @@ export default function CallPage() {
                 className="flex flex-col gap-2 px-4 py-2 border rounded-md"
                 key={location.place_id}
               >
-                <p>{location.name}</p>
-                <p>{location.vicinity}</p>
-                <p>{location.rating}</p>
+                <p className="text-lg font-bold">{location.name}</p>
+                <p className="italic text-neutral-700">{location.vicinity}</p>
+                <p className="flex items-center gap-1">
+                  <Star className="w-4 h-4 stroke-none fill-amber-500" />
+                  {location.rating}
+                </p>
               </li>
             ))}
           </ul>
