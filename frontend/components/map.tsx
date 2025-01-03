@@ -15,57 +15,37 @@ interface MapComponentProps {
 
 const containerStyle = {
   width: "100%",
-  height: "50vh",
+  height: "100%",
   borderRadius: "0.75rem",
   overflow: "hidden",
   border: "1px solid #e5e7eb",
 };
 
-const DEFAULT_CENTER = { lat: 0, lng: 0 };
-const DEFAULT_ZOOM = 2;
+export const DEFAULT_CENTER = { lat: 0, lng: 0 };
+export const DEFAULT_ZOOM = 2;
 
-export default function MapComponent({ locations }: MapComponentProps) {
+export default function MapComponent({
+  locations,
+  userLocation,
+  mapCenter,
+  zoom,
+  isLocating,
+  locationError,
+}: {
+  locations: MapComponentProps["locations"];
+  userLocation: { lat: number; lng: number } | null;
+  mapCenter: { lat: number; lng: number };
+  zoom: number;
+  isLocating: boolean;
+  locationError: string | null;
+}) {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
   });
-  const [userLocation, setUserLocation] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
 
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null
   );
-  const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER);
-  const [zoom, setZoom] = useState(DEFAULT_ZOOM);
-  const [isLocating, setIsLocating] = useState(true);
-  const [locationError, setLocationError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation({ lat: latitude, lng: longitude });
-          setMapCenter({ lat: latitude, lng: longitude });
-          setZoom(12);
-          setIsLocating(false);
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-          setLocationError(
-            "Unable to retrieve your location. Using default view."
-          );
-          setIsLocating(false);
-        }
-      );
-    } else {
-      setLocationError(
-        "Geolocation is not supported by your browser. Using default view."
-      );
-      setIsLocating(false);
-    }
-  }, []);
 
   const handleMarkerClick = useCallback((location: Location) => {
     setSelectedLocation(location);
@@ -196,9 +176,7 @@ export default function MapComponent({ locations }: MapComponentProps) {
   }
 
   return (
-    <div className="space-y-4">
-      {isLocating && <div>Locating your position...</div>}
-      {locationError && <div className="text-red-500">{locationError}</div>}
+    <div className="space-y-4 h-full">
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={mapCenter}
