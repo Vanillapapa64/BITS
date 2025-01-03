@@ -34,6 +34,7 @@ model Hospital{
   location String
   speciality Speciality @default(Multipspeciality)
   appointments Appointments[]
+  maxAppointments Int
 }
 enum Speciality{
   Multipspeciality
@@ -52,10 +53,19 @@ model Appointments {
   patientId Int
   hospitalId Int
   hospital Hospital @relation(fields:[hospitalId],references: [id])
-  Time String
-  Date String
-  CreatedAt DateTime
+  time DateTime
+  createdAt      DateTime        @default(now())
+  status         AppointmentStatus @default(Scheduled)
   severity Severity @default(Low)
+  @@unique([patientId, hospitalId, time])
+  @@index([hospitalId])
+  @@index([patientId])
+}
+enum AppointmentStatus {
+  Scheduled
+  Completed
+  Cancelled
+  NoShow
 }
 enum Severity{
   Low
@@ -69,10 +79,8 @@ model MedicalRecord {
   patient User @relation(fields: [patientId], references: [id])
   reportDate String?
   hemoglobin Decimal?
-  packedCellVolume Decimal?
   rbcCount Decimal?
   mcv Decimal?
-  lymphocytesDiff Decimal?
   neutrophils Decimal?
   lymphocytes Decimal?
   SGPT Decimal?
@@ -83,4 +91,5 @@ model MedicalRecord {
   Globulin Decimal?
   severity Severity @default(Low)
   summary String
+  @@index([patientId])
 }

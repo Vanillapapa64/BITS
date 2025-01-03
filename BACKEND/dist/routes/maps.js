@@ -36,18 +36,4 @@ mapsroute.post('/searchhospital', (req, res) => __awaiter(void 0, void 0, void 0
         .catch(error => console.error('Error fetching places:', error));
     console.log("done");
 }));
-const userLat = 31.599833;
-const userLng = 74.933556;
-const radius = 5000; // Search radius in meters
-const keyword = "eye hospital";
-fetch(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${userLat},${userLng}&radius=${radius}&type=hospital&keyword=${encodeURIComponent(keyword)}&key=${api}`)
-    .then(response => response.json())
-    .then(data => {
-    console.log("yoyoyoy");
-    data.results.forEach((element) => {
-        console.log(element.geometry.location);
-    });
-    // Display hospitals on a map or as a list
-})
-    .catch(error => console.error('Error fetching places:', error));
 exports.default = mapsroute;
