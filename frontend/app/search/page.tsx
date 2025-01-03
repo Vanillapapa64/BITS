@@ -1,12 +1,14 @@
 "use client";
 import MapComponent, { DEFAULT_CENTER, DEFAULT_ZOOM } from "@/components/map";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   GetLocationFromCookies,
   SetLocationCookies,
 } from "@/server/locationCookies";
 import { Location } from "@/types/location";
-import { Star } from "lucide-react";
+import { UserButton } from "@clerk/nextjs";
+import { ArrowLeft, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function CallPage() {
@@ -119,6 +121,7 @@ export default function CallPage() {
 
   return (
     <main className="flex flex-col gap-8 p-4 row-start-2 items-center">
+      <TopBar className="flex justify-between w-full lg:hidden" />
       <Card className="w-full lg:w-[30rem] lg:h-[calc(100vh-2rem)] lg:fixed lg:top-4 lg:left-4">
         <CardHeader>
           <CardTitle>Location Map</CardTitle>
@@ -129,8 +132,8 @@ export default function CallPage() {
           <div
             className={
               isLocating || locationError
-                ? "h-[calc(100vh-12rem)]"
-                : "h-[calc(100vh-8rem)]"
+                ? "lg:h-[calc(100vh-12rem)]"
+                : "h-[50vh] lg:h-[calc(100vh-8rem)]"
             }
           >
             <MapComponent
@@ -144,78 +147,96 @@ export default function CallPage() {
           </div>
         </CardContent>
       </Card>
-      <Card className="mt-6 lg:mt-0 lg:h-full lg:w-[calc(100%-31rem)] lg:fix lg:top-4 lg:ml-[calc(31rem)]">
-        <CardHeader>
-          {/* Radius Selector */}
-          <div className="flex flex-wrap items-center gap-2 mb-4">
-            <p>Search Range</p>
-            {radiusOptions.map((option) => (
-              <button
-                className="px-4 py-1 bg-neutral-100 rounded-md disabled:bg-black disabled:text-white hover:bg-neutral-200 transition-colors"
-                disabled={option === radius}
-                key={option}
-                onClick={() => handleRadiusChange(option)}
-              >
-                {option < 1000 ? `${option}m` : `${option / 1000}km`}
-              </button>
-            ))}
-          </div>
+      <div className="w-full lg:w-[calc(100%-31rem)] lg:top-4 lg:ml-[calc(31rem)]">
+        <TopBar className="hidden lg:flex justify-between w-full mb-4" />
+        <Card>
+          <CardHeader>
+            {/* Radius Selector */}
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              <p>Search Range</p>
+              {radiusOptions.map((option) => (
+                <button
+                  className="px-4 py-1 bg-neutral-100 rounded-md disabled:bg-black disabled:text-white hover:bg-neutral-200 transition-colors"
+                  disabled={option === radius}
+                  key={option}
+                  onClick={() => handleRadiusChange(option)}
+                >
+                  {option < 1000 ? `${option}m` : `${option / 1000}km`}
+                </button>
+              ))}
+            </div>
 
-          {/* Hospital Type Selector */}
-          <div className="flex flex-wrap items-center gap-2 mb-4">
-            <p>Type</p>
-            {hospitalTypes.map((type) => (
-              <button
-                className="px-4 py-1 bg-neutral-100 rounded-md disabled:bg-black disabled:text-white hover:bg-neutral-200 transition-colors "
-                disabled={
-                  (type.toLowerCase() === searchKeyword &&
-                    searchKeyword !== "") ||
-                  (type === "General" && searchKeyword === "")
-                }
-                key={type}
-                onClick={() => handleSearchKeywordChange(type)}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
-          <CardTitle className="text-2xl pt-8">
-            {" "}
-            Results for{" "}
-            <span className="bg-emerald-50 px-2 py-1 border border-emerald-700 text-emerald-700 rounded-md">
-              {searchKeyword
-                ? hospitalTypes.find(
-                    (type) => type.toLowerCase() == searchKeyword
-                  )
-                : "General"}{" "}
-              Hospital
-            </span>{" "}
-            in{" "}
-            <span className="bg-indigo-50 px-2 py-1 border border-indigo-700 text-indigo-700 rounded-md">
-              {radius < 1000 ? `${radius}m` : `${radius / 1000}km`}
-            </span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {/* Location List */}
-          <ul className="list-none flex flex-col gap-4">
-            <h1 className="text-2xl font-bold"></h1>
-            {locations.map((location) => (
-              <li
-                className="flex flex-col gap-2 px-4 py-2 border rounded-md"
-                key={location.place_id}
-              >
-                <p className="text-lg font-bold">{location.name}</p>
-                <p className="italic text-neutral-700">{location.vicinity}</p>
-                <p className="flex items-center gap-1">
-                  <Star className="w-4 h-4 stroke-none fill-amber-500" />
-                  {location.rating}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
+            {/* Hospital Type Selector */}
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              <p>Type</p>
+              {hospitalTypes.map((type) => (
+                <button
+                  className="px-4 py-1 bg-neutral-100 rounded-md disabled:bg-black disabled:text-white hover:bg-neutral-200 transition-colors "
+                  disabled={
+                    (type.toLowerCase() === searchKeyword &&
+                      searchKeyword !== "") ||
+                    (type === "General" && searchKeyword === "")
+                  }
+                  key={type}
+                  onClick={() => handleSearchKeywordChange(type)}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+            <CardTitle className="text-2xl pt-8">
+              {" "}
+              Results for{" "}
+              <span className="bg-emerald-50 px-2 py-1 border border-emerald-700 text-emerald-700 rounded-md">
+                {searchKeyword
+                  ? hospitalTypes.find(
+                      (type) => type.toLowerCase() == searchKeyword
+                    )
+                  : "General"}{" "}
+                Hospital
+              </span>{" "}
+              in{" "}
+              <span className="bg-indigo-50 px-2 py-1 border border-indigo-700 text-indigo-700 rounded-md">
+                {radius < 1000 ? `${radius}m` : `${radius / 1000}km`}
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {/* Location List */}
+            <ul className="list-none flex flex-col gap-4">
+              <h1 className="text-2xl font-bold"></h1>
+              {locations.map((location) => (
+                <li
+                  className="flex flex-col gap-2 px-4 py-2 border rounded-md"
+                  key={location.place_id}
+                >
+                  <p className="text-lg font-bold">{location.name}</p>
+                  <p className="italic text-neutral-700">{location.vicinity}</p>
+                  <p className="flex items-center gap-1">
+                    <Star className="w-4 h-4 stroke-none fill-amber-500" />
+                    {location.rating}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      </div>
     </main>
+  );
+}
+
+function TopBar({ className }: { className: string }) {
+  return (
+    <div className={className}>
+      <Button
+        variant={"outline"}
+        size={"sm"}
+        onClick={() => window.history.back()}
+      >
+        <ArrowLeft /> Go back
+      </Button>
+      <UserButton />
+    </div>
   );
 }
