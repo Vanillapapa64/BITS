@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/zodtypes.ts","./src/functions/appointments.ts","./src/functions/fhir.ts","./src/functions/gemini.ts","./src/functions/ocr.ts","./src/routes/auth.ts","./src/routes/hospital.ts","./src/routes/index.ts","./src/routes/maps.ts","./src/routes/user.ts","./src/routes/webhooks.ts"],"version":"5.7.2"}

@@ -8,6 +8,7 @@ const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const maps_1 = __importDefault(require("./maps"));
 const user_1 = __importDefault(require("./user"));
+const webhooks_1 = __importDefault(require("./webhooks"));
 const app = (0, express_1.default)();
 const router = express_1.default.Router();
 app.use(body_parser_1.default.json());
@@ -18,4 +19,5 @@ console.log("hi from  index.ts");
 //hospital
 router.use('/user', user_1.default);
 router.use('/maps', maps_1.default);
+router.use('/webhooks', webhooks_1.default);
 exports.default = router;
