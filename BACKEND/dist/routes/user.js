@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const multer_1 = __importDefault(require("multer"));
 const ocr_1 = require("../functions/ocr");
 const fhir_1 = require("../functions/fhir");
+const appointments_1 = require("../functions/appointments");
 const userRouter = express_1.default.Router();
 const upload = (0, multer_1.default)({ dest: 'uploads/' });
 userRouter.post('/ocr', upload.single('file'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -37,6 +38,17 @@ userRouter.get('/fetch', (req, res) => __awaiter(void 0, void 0, void 0, functio
         const body = req.body;
         const response = yield (0, fhir_1.searchPatient)(body);
         res.json({ response: response });
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err });
+    }
+}));
+userRouter.post('/newAppointment', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const body = req.body;
+        const creation = yield (0, appointments_1.createAppointment)(body);
+        res.json({ id: creation });
     }
     catch (err) {
         console.error(err);

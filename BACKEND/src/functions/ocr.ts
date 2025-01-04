@@ -27,6 +27,7 @@ export async function performOCr(imagepath:string): Promise<string>{
             throw new Error('OCR processing failed.');
         }
 }
+
 // export async function OcrPdf(pdfPath:string,pages:number):Promise<string>{
 //     const outputDir = path.dirname(pdfPath);
 //     const opts: pdfPoppler.ConvertOptions = {
