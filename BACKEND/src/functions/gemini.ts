@@ -1,7 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
-import { log } from "node:console";
-import { string } from "zod";
 
 dotenv.config();
 
