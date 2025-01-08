@@ -81,14 +81,8 @@ model MedicalRecord {
   hemoglobin Decimal?
   rbcCount Decimal?
   mcv Decimal?
-  neutrophils Decimal?
+  leukocyte Decimal?
   lymphocytes Decimal?
-  SGPT Decimal?
-  SGOT Decimal?
-  GGTP Decimal?
-  Albumin Decimal?
-  Protein Decimal?
-  Globulin Decimal?
   severity Severity @default(Low)
   summary String
   @@index([patientId])

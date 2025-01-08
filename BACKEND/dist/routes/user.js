@@ -27,7 +27,8 @@ userRouter.post('/ocr', upload.single('file'), (req, res) => __awaiter(void 0, v
         }
         const path = req.file.path;
         const text = yield (0, ocr_1.performOCr)(path);
-        res.json({ Detected: text });
+        const extracted = (0, ocr_1.extractBloodReportData)(text);
+        res.json(extracted);
     }
     catch (err) {
         res.status(500).json({ error: "Some error" });
