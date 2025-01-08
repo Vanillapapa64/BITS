@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import multer from 'multer'
 import {  extractBloodReportData, newreport, performOCr, report } from '../functions/ocr';
 import { searchParams, searchPatient } from '../functions/fhir';
-import { Appointmentscreation, createAppointment } from '../functions/appointments';
+import { Appointmentscreation, createAppointment, newuser, user } from '../functions/appointments';
 import { AIquery, getAIResponse } from '../functions/gemini';
 const userRouter= express.Router();
 const upload = multer({ dest: 'uploads/' });
@@ -61,4 +61,14 @@ userRouter.post('/newAppointment',async(req:Request,res:Response)=>{
         res.status(500).json({error:err})
     }
 })
+
+userRouter.post('/signup',async(req:Request,res:Response)=>{
+    try{
+        const body:user=req.body;
+        const resp=newuser(body)
+        res.json({message:`new user create with id ${resp}`})
+    }catch(err){
+        console.error(err)
+        res.status(500).json({error:err})
+    }})
 export default userRouter

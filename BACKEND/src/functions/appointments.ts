@@ -16,8 +16,36 @@ export enum Severity {
     High = "High",
     Emergency = "Emergency",
 }
+export interface user{
+    username:string,
+    password:string,
+    age:number,
+    gender:Gender 
+}
+export enum Gender{
+    None="None",
+    Male="Male",
+    Female="Female"
+}
 import { Prisma, PrismaClient } from "@prisma/client";
 const prisma=new PrismaClient()
+export async function newuser(x:user) {
+    try {
+        await prisma.$connect();
+        const response=await prisma.user.create({
+            data:{
+                username:x.username,
+                password:x.password,
+                age:x.age,
+                gender:x.gender
+            }
+
+        })
+        return response.id
+    } catch (error) {
+        return new Error("error creating user")
+    }
+}
 export async function createAppointment(inputs:Appointmentscreation) {
     try{
         await prisma.$connect();
