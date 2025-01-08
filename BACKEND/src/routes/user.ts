@@ -2,9 +2,10 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import multer from 'multer'
-import {  extractBloodReportData, performOCr } from '../functions/ocr';
+import {  extractBloodReportData, newreport, performOCr, report } from '../functions/ocr';
 import { searchParams, searchPatient } from '../functions/fhir';
 import { Appointmentscreation, createAppointment } from '../functions/appointments';
+import { AIquery, getAIResponse } from '../functions/gemini';
 const userRouter= express.Router();
 const upload = multer({ dest: 'uploads/' });
 userRouter.post('/ocr',upload.single('file'),async(req:Request,res:Response)=>{
@@ -21,13 +22,23 @@ userRouter.post('/ocr',upload.single('file'),async(req:Request,res:Response)=>{
         res.status(500).json({error:"Some error"})
     }
 })
-userRouter.post('/reports',async(req:Request,res:Response)=>{
+userRouter.post('/aireport',async(req:Request,res:Response)=>{
     try{
-        
+        const body:AIquery=req.body;
+        const airesponse=getAIResponse(body)
+        res.json({response:airesponse})
     }catch(err){
         res.status(500).json({error:"Some error"})
     }}
 )
+userRouter.post('/storereport',async(req:Request,res:Response)=>{
+    try{
+        const body:report=req.body;
+        const response=newreport(body)
+        res.json({message:response})
+    }catch(err){
+        res.status(500).json({error:"Some error"})
+    }})
 userRouter.get('/fetch',async(req:Request,res:Response)=>{
     try{
         
