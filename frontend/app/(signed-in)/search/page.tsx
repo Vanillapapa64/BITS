@@ -117,8 +117,26 @@ export default function CallPage() {
   };
 
   const radiusOptions = [500, 1000, 5000, 10000, 20000, 50000];
-  const hospitalTypes = ["General", "Eye", "Dental", "Skin", "Bone"];
+  const hospitalTypes = ["General", "Eye", "Dental", "Skin", "Bone"]
+  useEffect(() => {
+    async function pingUser() {
+      const api = process.env.NEXT_PUBLIC_API_URL;
+      try {
+      const response = await fetch(`${api}/api/v1/user/ping`, {
+        method: "GET",
+        headers: {
+        "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      } catch (error) {
+      console.error("Error:", error);
+      }
+    }
 
+    pingUser();
+  })
   return (
     <main className="flex flex-col gap-8 p-4 row-start-2 items-center">
       <TopBar className="flex justify-between w-full lg:hidden" />
